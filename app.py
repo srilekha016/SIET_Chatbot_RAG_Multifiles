@@ -1,39 +1,42 @@
 import streamlit as st
 from rag_engine import load_base, ask_rag
-st.title("SIET_Chatbot")
+st.set_page_config(page_title="SIET_Chatbot", layout="centered")
+st.title("SHRIDEVI INSTITUTE OF ENGINEERING AND TECHNOLOGY")
+st.caption("Ask anything about the College Information, Courses,FAQs,Rules and regulation,Placements...")
+st.caption("RAG Pipeline with multiple files")
+st.caption("Created by Chandana Lokesh")
 
-st.caption("Ask anything about college information ,courses, Placements, FAQs, Rules and Regulations")
-st.caption("RAG Pipeline with Multiple files")
+mykey=st.secrets["GROQ_API_KEY"]
 
 @st.cache_resource
 def initiate_rag():
   return load_base("college_docs")
   
-index, embed_model, chunks = initiate_rag()
+index, embed_model, chunks= initiate_rag()
 
 if "chat_hist" not in st.session_state:
   st.session_state.chat_hist = []
 
-for qa in st.session_state.chat_hist :
-  with st.chat_message(qa["role"]):
-   st.write(qa["content"])
+for qa in st.session_state.chat_hist:
+  with st.chat_message(qa['role']):
+    st.write(qa['content'])
 
-question = st.chat_input("Ask anything about SIET college....")
+question=st.chat_input("Ask anything about SIET College...")
 
 if question:
   st.session_state.chat_hist.append(
-    {"role" :"user" , "content" : question})
+    {"role":"user",
+     "content":question})
   with st.chat_message("user"):
     st.write(question)
-
   with st.chat_message("assistant"):
-    with st.spinner("Asking RAG for answer...."):
-      answer = ask_rag (question, embed_model, chunks,
-                        index, api_key = mykey)
+    with st.spinner("Generating answer..."):
+      answer=ask_rag(question, embed_model, chunks, index, api_key=mykey)
       st.write(answer)
       st.session_state.chat_hist.append(
-    {"role" :"assistant" , "content" :answer})
-      
+       {"role":"assistant",
+        "content":answer})
+
 if st.button("Clear chat"):
-  st.session_state.chat_hist = []
+  st.session_state.chat_hist=[]
   st.rerun()
