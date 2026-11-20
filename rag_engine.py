@@ -37,7 +37,7 @@ def build_vectors (chunks,model_name="all-MiniLM-L6-v2"):
   return index,embed_model,chunks
   
 #call loadpdf,chuk,embedding
-def load_base(pdf_path = "01_College_Information.pdf"):
+def load_base(pdf_path = "college_docs"):
   chunks =[]
   for pdf in Path(pdf_path).glob("*pdf"):
   full_text = load_pdf(pdf)
